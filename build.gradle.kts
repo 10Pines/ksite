@@ -22,6 +22,10 @@ dependencies {
     implementation("org.http4k", "http4k-format-gson", http4kVersion)
 
     implementation("com.typesafe.akka", "akka-actor-typed_2.12", "2.5.22")
+    implementation("com.typesafe.akka", "akka-slf4j_2.12", "2.5.22")
+    implementation("ch.qos.logback", "logback-classic", "1.2.3")
+
+    //implementation("org.slf4j", "slf4j-simple", "1.7.26")
 }
 
 tasks.withType<KotlinCompile> {
