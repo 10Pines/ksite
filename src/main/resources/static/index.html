@@ -20,7 +20,7 @@
 
         const uuid = UUID();
 
-        const url = `ws://localhost:9000/${uuid}`;
+        const url = `ws:///ksite-qa.us-west-2.elasticbeanstalk.com/${uuid}`;
         const socket = new WebSocket(url);
 
         socket.onopen = () => {

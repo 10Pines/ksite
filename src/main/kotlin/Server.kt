@@ -18,7 +18,7 @@ fun main() {
     )
     val httpLayer = routes(
         "/{uuid}" bind Method.DELETE to removeUser(actorSystem),
-        "/site" bind static(Classpath(""))
+        "/static" bind static(Classpath("/static"))
     )
 
     val port = System.getenv("PORT")?.toIntOrNull() ?: 9000
