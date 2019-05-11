@@ -36,5 +36,6 @@ tasks.withType<ShadowJar> {
     manifest {
         attributes["Main-Class"] = "ServerKt"
     }
+    mergeServiceFiles("reference.conf")
     mergeServiceFiles()
 }
