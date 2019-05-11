@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript">
+        const UUID = () => {
+            const UUID_KEY = "10pines-ksite-id";
+            let existingUUID = localStorage.getItem(UUID_KEY);
+            if (existingUUID !== null) {
+                return existingUUID;
+            } else {
+                let randomLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+                const newUUID = randomLetter + Date.now();
+                console.log(newUUID);
+                localStorage.setItem(UUID_KEY, newUUID);
+                return newUUID;
+            }
+        };
+
+        const uuid = UUID();
+
+        const url = `ws://localhost:9000/${uuid}`;
+        const socket = new WebSocket(url);
+
+        socket.onopen = () => {
+            console.log("Websocket opened");
+            socket.send(JSON.stringify({id: uuid}))
+        };
+
+        socket.onmessage = (event) => {
+            console.log(event.data)
+        };
+
+        socket.onclose = () => {
+            console.log("socket closed!")
+        }
+    </script>
+</head>
+<body>
+
+</body>
+</html>
