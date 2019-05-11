@@ -21,5 +21,6 @@ fun main() {
         "/site" bind static(Classpath(""))
     )
 
-    PolyHandler(httpLayer, websocketLayer).asServer(Jetty(9000)).start()
+    val port = System.getenv("PORT")?.toIntOrNull() ?: 9000
+    PolyHandler(httpLayer, websocketLayer).asServer(Jetty(port)).start()
 }
