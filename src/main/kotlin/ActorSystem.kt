@@ -1,18 +1,24 @@
+import akka.actor.Scheduler
 import akka.actor.typed.ActorRef
+import akka.actor.typed.ActorSystem
 import akka.actor.typed.Behavior
 import akka.actor.typed.SupervisorStrategy
 import akka.actor.typed.javadsl.ActorContext
+import akka.actor.typed.javadsl.AskPattern
 import akka.actor.typed.javadsl.Behaviors
 import akka.actor.typed.receptionist.Receptionist
 import akka.actor.typed.receptionist.ServiceKey
 import java.time.Duration
+import java.util.concurrent.CompletionStage
+import akka.japi.function.Function as JApiFunction
 import java.util.function.BiFunction as JBiFunction
 import java.util.function.Function as JFunction
 
-interface SystemMessage
-data class ConnectUser(val user: User) : SystemMessage
-data class RemoveUser(val userName: String) : SystemMessage
-data class SpawnUser(val user: User) : SystemMessage
+
+sealed class SystemMessage
+data class ConnectUser(val user: User) : SystemMessage()
+data class RemoveUser(val userName: String) : SystemMessage()
+data class SpawnUser(val user: User) : SystemMessage()
 
 fun specificUserServiceKey(name: String): ServiceKey<UserActions> =
     ServiceKey.create(UserActions::class.java, "users-$name")
@@ -35,7 +41,7 @@ val systemMain: Behavior<SystemMessage> =
     ).onFailure(SupervisorStrategy.restart())
 
 @Suppress("unused")
-private fun <Self, Res, Req> ActorContext<Self>.ask(
+fun <Self, Res, Req> ActorContext<Self>.ask(
     clazz: Class<Res>,
     recipient: ActorRef<Req>,
     timeout: Duration,
@@ -50,3 +56,16 @@ private fun <Self, Res, Req> ActorContext<Self>.ask(
         JBiFunction { t, u -> adaptResponse(t, u) }
     )
 }
+
+@Suppress("unused")
+fun <Req, Res> ask(
+    actor: ActorSystem<Req>,
+    injectReplyTo: (ActorRef<Res>) -> Req,
+    timeout: Duration,
+    scheduler: Scheduler
+): CompletionStage<Res> = AskPattern.ask(
+    actor,
+    JApiFunction { replyTo: ActorRef<Res> -> injectReplyTo(replyTo) },
+    timeout,
+    scheduler
+)
