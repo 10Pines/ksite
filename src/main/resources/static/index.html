@@ -20,7 +20,8 @@
 
         const uuid = UUID();
 
-        const url = `ws:///ksite-qa.us-west-2.elasticbeanstalk.com/${uuid}`;
+        const [baseUrl] = document.location.href.split("/").slice(2, 3);
+        const url = `ws://${baseUrl}/${uuid}`;
         const socket = new WebSocket(url);
 
         socket.onopen = () => {
