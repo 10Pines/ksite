@@ -14,7 +14,7 @@ fun main() {
     val actorSystem: ActorSystem<SystemMessage> = ActorSystem.create(systemMain, "ksite", ConfigFactory.load())
 
     val websocketLayer = websockets(
-        "/{uuid}" bind newUser(actorSystem)
+        "/{uuid}" bind connectUser(actorSystem)
     )
     val httpLayer = routes(
         "/{uuid}" bind Method.DELETE to removeUser(actorSystem),
